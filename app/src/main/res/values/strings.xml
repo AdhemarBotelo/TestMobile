@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">TestMobile</string>
+    <string name="action_categories">Categories</string>
+
+    <string name="label_seats">Seats:</string>
+    <string name="label_price">Price:</string>
+    <string name="label_New">New:</string>
+    <string name="label_model">Model:</string>
+    <string name="label_date_released">Date released:</string>
+    <string name="label_category">Category:</string>
+    <string name="failure_network_connection">An network error ocurred verify your connection</string>
+    <string name="data_base_error">We can not get the data from the data base try again</string>
+    <string name="failure_server_error">a Server error ocurred sorry try again</string>
+    <string name="car_information">Car Information</string>
+    <string name="label_extra_inf">Extra Information:</string>
+
+
+</resources>
