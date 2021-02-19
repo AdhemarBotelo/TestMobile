@@ -1,4 +1,4 @@
-Problem:
+Comments:
 the application implement a clar architecure with 3 layers one for data other for for the domain ,and the last one for the UI
 it use repository pattern , command pattern , mmvvm presenter pattern
 JIC the app support dark mode
