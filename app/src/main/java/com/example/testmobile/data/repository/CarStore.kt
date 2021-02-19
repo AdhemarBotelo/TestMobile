@@ -15,6 +15,10 @@ interface CarStore {
 
     fun getCategories(): List<Category>
 
+    fun insertCategory(category: Category)
+
+    fun deleteCategory(idCategory: String)
+
     fun getPropertyByCategory(categoryId: String): List<Property>
 
     fun insertDefaultCategories();

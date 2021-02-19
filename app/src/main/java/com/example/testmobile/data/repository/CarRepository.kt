@@ -14,7 +14,7 @@ interface CarRepository {
     fun deleteCar(id: Long): Either<Failure, Boolean>
 
     fun getCategories(): Either<Failure, List<CategoryEntity>>
-    fun getPropertyesByCategory(categoryId: String): Either<Failure, List<PropertyEntity>>
 
+    fun getPropertyesByCategory(categoryId: String): Either<Failure, List<PropertyEntity>>
     fun createDefaultCategories(): Either<Failure, Boolean>
 }

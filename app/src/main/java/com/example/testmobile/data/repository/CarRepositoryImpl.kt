@@ -101,6 +101,9 @@ class CarRepositoryImpl(private val carStoreImpl: CarStore) : CarRepository {
         }
     }
 
+
+
+    //Mappers
     private fun carToCarEntity(car: Car): CarEntity {
         return CarEntity(
             car.carId,
@@ -127,7 +130,6 @@ class CarRepositoryImpl(private val carStoreImpl: CarStore) : CarRepository {
             ""
         )
     }
-
 
     private fun carEntityToCar(carEntity: CarEntity): Car {
         return Car(

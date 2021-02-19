@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testmobile.R
 import com.example.testmobile.core.Failure
 import com.example.testmobile.databinding.ActivityMainBinding
+import com.example.testmobile.features.categories.CategoryActivity
 import com.example.testmobile.interactor.entities.CarEntity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -122,7 +123,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_category -> true
+            R.id.action_category -> {
+                startActivity(Intent(this, CategoryActivity::class.java))
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

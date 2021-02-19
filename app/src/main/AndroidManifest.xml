@@ -10,10 +10,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TestMobile">
-        <activity android:name=".features.cars.CarActivity"></activity>
+        <activity
+            android:name=".features.categories.CategoryActivity"
+            android:label="@string/title_category"></activity>
+        <activity
+            android:name=".features.cars.CarActivity"
+            android:label="@string/title_car" />
         <activity
             android:name=".features.cars.MainActivity"
-            android:label="@string/app_name"
+            android:label="@string/title_cars"
             android:theme="@style/Theme.TestMobile.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

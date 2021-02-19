@@ -39,6 +39,14 @@ class CarStoreImpl(private val database: CarsDatabase) : CarStore {
         return carCategory.selectCategories();
     }
 
+    override fun insertCategory(category: Category) {
+        carCategory.insertCategory(category)
+    }
+
+    override fun deleteCategory(idCategory: String) {
+        carCategory.deleteCategory(idCategory)
+    }
+
     override fun getPropertyByCategory(categoryId: String): List<Property> {
         return property.selectPropertyByCategory(categoryId)
     }

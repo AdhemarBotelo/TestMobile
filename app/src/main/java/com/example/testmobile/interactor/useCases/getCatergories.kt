@@ -6,7 +6,7 @@ import com.example.testmobile.data.repository.CarRepository
 import com.example.testmobile.interactor.entities.CarEntity
 import com.example.testmobile.interactor.entities.CategoryEntity
 
-class GetCatergories constructor(private val carRepository: CarRepository) :
+class getCatergories constructor(private val carRepository: CarRepository) :
     UseCase<List<CategoryEntity>, UseCase.None>() {
 
     override suspend fun run(params: None): Either<Failure, List<CategoryEntity>> =

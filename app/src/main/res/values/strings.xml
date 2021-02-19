@@ -15,7 +15,13 @@
     <string name="label_extra_inf">Extra Information:</string>
     <string name="format_date">mm/dd/yyyy</string>
     <string name="delete_question">Are you sure to delete the car?</string>
+    <string name="delete_question_category">Are you sure to delete the category?</string>
     <string name="delete">Delete</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="add_category">Add Category</string>
+
+    <string name="title_cars">Cars</string>
+    <string name="title_car">Car</string>
+    <string name="title_category">Categories</string>
 </resources>

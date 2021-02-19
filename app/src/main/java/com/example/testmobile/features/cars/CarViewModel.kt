@@ -9,7 +9,7 @@ import com.example.testmobile.interactor.entities.PropertyEntity
 import com.example.testmobile.interactor.useCases.*
 
 class CarViewModel constructor(
-    private val getCategories: GetCatergories,
+    private val getCategories: getCatergories,
     private val getPropertiesByCategory: GetPropertiesByCategory,
     private val insertCar: InsertCar,
     private val updateCar: UpdateCar,
