@@ -8,9 +8,7 @@ import com.example.testmobile.data.repository.CarStore
 import com.example.testmobile.data.repository.CarStoreImpl
 import com.example.testmobile.features.cars.CarViewModel
 import com.example.testmobile.features.cars.CarsViewModel
-import com.example.testmobile.interactor.useCases.GetCars
-import com.example.testmobile.interactor.useCases.GetCatergories
-import com.example.testmobile.interactor.useCases.InitDB
+import com.example.testmobile.interactor.useCases.*
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -33,6 +31,8 @@ val mRepositoryModules = module {
 val mUseCaseModules = module {
     factory { GetCars(get()) }
     factory { GetCatergories(get()) }
+    factory { GetPropertiesByCategory(get()) }
+    factory { InsertCar(get()) }
     factory { InitDB(get()) }
 }
 
@@ -41,7 +41,7 @@ val mViewModelsModules = module {
         CarsViewModel(get(), get())
     }
     viewModel {
-        CarViewModel(get())
+        CarViewModel(get(), get(), get())
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.testmobile.data.repository
 
+import com.example.testmobile.core.DefaultCategories
 import com.example.testmobile.data.db.CarDao
 import com.example.testmobile.data.db.CarsDatabase
 import com.example.testmobile.data.db.CategoryDao
@@ -19,7 +20,7 @@ class CarStoreImpl(private val database: CarsDatabase) : CarStore {
         return carDao.getCar(id);
     }
 
-    override fun insertCar(car: Car, property: CarPropertyCrossRef) {
+    override fun insertCar(car: Car, property: List<CarPropertyCrossRef>) {
         return carDao.insertCarProperty(car, property)
     }
 
@@ -35,11 +36,51 @@ class CarStoreImpl(private val database: CarsDatabase) : CarStore {
         return carCategory.selectCategories();
     }
 
-    override fun insertDefaultCategories() {
-        carCategory.insertCategory(Category("Electric"))
-        carCategory.insertCategory(Category("Truck"))
-        carCategory.insertCategory(Category("Commercial"))
+    override fun getPropertyByCategory(categoryId: String): List<Property> {
+        return property.selectPropertyByCategory(categoryId)
     }
 
 
+    override fun insertDefaultCategories() {
+        for (category in DefaultCategories) {
+            carCategory.insertCategory(Category(category))
+        }
+        insertDefaultPropertiesCategory()
+    }
+
+    private fun insertDefaultPropertiesCategory() {
+        for (category in DefaultCategories) {
+            if (property.selectPropertyByCategory(category).count() == 0) {
+                when (category) {
+                    "Electric" -> {
+                        property.insertProperty(
+                            Property(
+                                isNumber = true,
+                                name = "Batery capacity",
+                                propertyCategoryId = category
+                            )
+                        )
+                    }
+                    "Truck" -> {
+                        property.insertProperty(
+                            Property(
+                                isNumber = true,
+                                name = "Max available payload",
+                                propertyCategoryId = category
+                            )
+                        )
+                    }
+                    "Commercial" -> {
+                        property.insertProperty(
+                            Property(
+                                isNumber = true,
+                                name = "Space capacity",
+                                propertyCategoryId = category
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

@@ -6,7 +6,7 @@ import com.example.testmobile.data.models.*
 @Dao
 interface CarDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCar(vararg cars: Car)
+    fun insertCar(cars: Car): Long
 
     @Delete
     fun deleteCar(vararg cars: Car)
@@ -32,8 +32,11 @@ interface CarDao {
     fun insertPropertyCar(carProperty: CarPropertyCrossRef)
 
     @Transaction
-    fun insertCarProperty(car: Car, carProperty: CarPropertyCrossRef) {
-        insertCar(car)
-        insertPropertyCar(carProperty)
+    fun insertCarProperty(car: Car, carProperty: List<CarPropertyCrossRef>) {
+        var idCar = insertCar(car)
+        for (property in carProperty) {
+            property.carId = idCar
+            insertPropertyCar(property)
+        }
     }
 }

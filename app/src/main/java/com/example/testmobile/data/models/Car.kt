@@ -30,7 +30,7 @@ data class Property(
 
 @Entity(primaryKeys = ["carId", "propertyId"])
 data class CarPropertyCrossRef(
-    val carId: Long,
+    var carId: Long,
     val propertyId: Long,
     val value:String
 )

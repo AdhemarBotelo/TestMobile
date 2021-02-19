@@ -13,4 +13,7 @@ interface PropertyDao {
 
     @Update
     fun updateProperty(vararg property: Property)
+
+    @Query("Select * From Properties Where propertyCategoryId=:idCategory")
+    fun selectPropertyByCategory(idCategory: String): List<Property>
 }
