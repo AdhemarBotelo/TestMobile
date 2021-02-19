@@ -4,10 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.core.view.children
 import com.example.testmobile.core.categoryNotEditable
 import com.example.testmobile.databinding.ActivityCarBinding
@@ -86,11 +83,34 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
     private fun processCar() {
-        if (isUpdating > 0) {
-            updateCar()
-        } else {
-            insertCar()
+        if (isValidCar()) {
+            if (isUpdating > 0) {
+                updateCar()
+            } else {
+                insertCar()
+            }
         }
+
+    }
+
+    private fun isValidCar(): Boolean {
+        if (binding.editTextSeats.text.isNullOrEmpty()) {
+            Toast.makeText(this, "Seats is required", Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (binding.editTextPrice.text.isNullOrEmpty()) {
+            Toast.makeText(this, "Price is required", Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (binding.editTextModel.text.isNullOrEmpty()) {
+            Toast.makeText(this, "Model is required", Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (binding.editTextDate.text.isNullOrEmpty()) {
+            Toast.makeText(this, "Date release is required", Toast.LENGTH_LONG).show()
+            return false
+        }
+        return true
     }
 
     private fun insertCar() {
