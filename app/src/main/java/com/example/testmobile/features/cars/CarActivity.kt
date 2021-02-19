@@ -6,17 +6,22 @@ import android.text.InputType
 import android.view.View
 import android.widget.*
 import androidx.core.view.children
+import com.example.testmobile.R
+import com.example.testmobile.core.Failure
 import com.example.testmobile.core.categoryNotEditable
 import com.example.testmobile.databinding.ActivityCarBinding
 import com.example.testmobile.interactor.entities.CarEntity
 import com.example.testmobile.interactor.entities.CategoryEntity
 import com.example.testmobile.interactor.entities.PropertyEntity
+import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
 
 class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     val viewModel: CarViewModel by inject<CarViewModel>()
     private lateinit var binding: ActivityCarBinding
-    var isUpdating = 0L
+    var carCodeSelected = 0L
+    private lateinit var categories: List<CategoryEntity>
+    private lateinit var selectedCar: CarEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +29,10 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         setContentView(binding.root)
 
         viewModel.loadCategories()
+
+        viewModel.failure.observe(this, {
+            handlerFailure(it)
+        })
 
         viewModel.categories.observe(this, {
             setCategories(it)
@@ -37,8 +46,9 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             var message = "fallo"
         })
 
-        isUpdating = intent.getLongExtra("", -1)
-        if (isUpdating > 0) {
+        carCodeSelected = intent.getLongExtra("CarId", -1)
+        if (carCodeSelected > 0) {
+            viewModel.getCar(carCodeSelected)
             binding.buttonCar.text = "Update Car"
         } else {
             binding.buttonCar.text = "Create Car"
@@ -50,9 +60,36 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         viewModel.properties.observe(this, {
             drawExtraPropertiesCar(it)
+            if (carCodeSelected > 0) {
+                drawCar()
+            }
+        })
+
+        viewModel.car.observe(this, {
+            binding.spinnerCategory.setSelection(categories.indexOfFirst { categoryEntity -> categoryEntity.categoryId == it.categoryId })
+            selectedCar = it
         })
 
         binding.spinnerCategory.onItemSelectedListener = this
+    }
+
+    private fun drawCar() {
+        if (selectedCar != null) {
+            binding.editTextSeats.setText(selectedCar.seats.toString())
+            binding.editTextPrice.setText(selectedCar.price.toString())
+            binding.editTextModel.setText(selectedCar.model.toString())
+            binding.editTextDate.setText(selectedCar.dateReleased.toString())
+            binding.switchNewOld.isChecked = selectedCar.isNew ?: false
+
+            for (view in binding.linearLayoutExtra.children) {
+                if (view is EditText) {
+                    val propertyFound = selectedCar.properties.find { it.propertyId == view.tag }
+                    if (propertyFound != null) {
+                        view.setText(propertyFound.value)
+                    }
+                }
+            }
+        }
     }
 
     private fun drawExtraPropertiesCar(properties: List<PropertyEntity>?) {
@@ -84,7 +121,7 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private fun processCar() {
         if (isValidCar()) {
-            if (isUpdating > 0) {
+            if (carCodeSelected > 0) {
                 updateCar()
             } else {
                 insertCar()
@@ -113,7 +150,7 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         return true
     }
 
-    private fun insertCar() {
+    private fun getInfoFromView(): CarEntity {
         val category = (binding.spinnerCategory.selectedItem as CategoryEntity).categoryId
         val properties = mutableListOf<PropertyEntity>()
         for (view in binding.linearLayoutExtra.children) {
@@ -128,9 +165,9 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 )
             }
         }
-
-        val car = CarEntity(
-            0L,
+        val carId = if(carCodeSelected>0) carCodeSelected else  0L
+        return CarEntity(
+            carId,
             binding.editTextSeats.text.toString().toIntOrNull() ?: 0,
             binding.editTextPrice.text.toString().toDoubleOrNull() ?: 0.0,
             binding.switchNewOld.isChecked,
@@ -140,15 +177,18 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             category,
             properties
         )
+    }
 
-        viewModel.saveCar(car)
+    private fun insertCar() {
+        viewModel.saveCar(getInfoFromView())
     }
 
     private fun updateCar() {
-        TODO("Not yet implemented")
+        viewModel.updateCar(getInfoFromView())
     }
 
     private fun setCategories(it: List<CategoryEntity>) {
+        categories = it
         val adapterCategories = ArrayAdapter<CategoryEntity>(
             this,
             android.R.layout.simple_spinner_item,
@@ -161,15 +201,23 @@ class CarActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val category = (binding.spinnerCategory.selectedItem as CategoryEntity).categoryId
         viewModel.loadProperties(category)
-        binding.buttonCar.isEnabled = category != categoryNotEditable || isUpdating < 0
+        binding.buttonCar.isEnabled = category != categoryNotEditable || carCodeSelected < 0
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
 
     }
 
+    private fun handlerFailure(failure: Failure?) {
+        when (failure) {
+            is Failure.NetworkConnection -> renderFailure(getString(R.string.failure_network_connection))
+            is Failure.DataBaseError -> renderFailure(getString(R.string.data_base_error))
+            is Failure.ServerError -> renderFailure(getString(R.string.failure_server_error))
+            else -> renderFailure(getString(R.string.failure_server_error))
+        }
+    }
 
+    private fun renderFailure(message: String) {
+        Snackbar.make(this, binding.buttonCar, message, Snackbar.LENGTH_LONG)
+    }
 }
-
-
-

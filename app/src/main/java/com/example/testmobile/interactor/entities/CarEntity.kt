@@ -11,7 +11,7 @@ data class CarEntity(
     var isUpdatable: Boolean = true,
     var dateReleased: String? = null,
     val categoryId: String,
-    var properties: List<PropertyEntity>
+    var properties: MutableList<PropertyEntity>
 )
 
 data class PropertyEntity(
@@ -24,7 +24,7 @@ data class PropertyEntity(
 
 data class CategoryEntity(
     val categoryId: String
-){
+) {
     override fun toString(): String {
         return categoryId;
     }

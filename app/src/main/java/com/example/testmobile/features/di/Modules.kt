@@ -1,6 +1,7 @@
 package com.example.testmobile.features.di
 
 import androidx.room.Room
+import androidx.room.Update
 import com.example.testmobile.data.db.CarsDatabase
 import com.example.testmobile.data.repository.CarRepository
 import com.example.testmobile.data.repository.CarRepositoryImpl
@@ -30,20 +31,21 @@ val mRepositoryModules = module {
 
 val mUseCaseModules = module {
     factory { GetCars(get()) }
+    factory { GetCar(get()) }
     factory { GetCatergories(get()) }
     factory { GetPropertiesByCategory(get()) }
+    factory { UpdateCar(get()) }
+    factory { DeleteCar(get()) }
     factory { InsertCar(get()) }
     factory { InitDB(get()) }
 }
 
 val mViewModelsModules = module {
     viewModel {
-        CarsViewModel(get(), get())
+        CarsViewModel(get(), get(), get())
     }
     viewModel {
-        CarViewModel(get(), get(), get())
+        CarViewModel(get(), get(), get(), get(),get())
     }
 
 }
-
-

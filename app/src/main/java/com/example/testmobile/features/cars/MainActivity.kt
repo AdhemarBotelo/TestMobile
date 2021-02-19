@@ -1,10 +1,13 @@
 package com.example.testmobile.features.cars
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.testmobile.R
@@ -14,6 +17,7 @@ import com.example.testmobile.interactor.entities.CarEntity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import org.koin.android.ext.android.inject
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,11 +52,33 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        loadCars()
+        carsAdapter.clickDeleteListener = {
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.delete))
+                .setMessage(getString(R.string.delete_question))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(R.string.yes,
+                    DialogInterface.OnClickListener { dialog, whichButton ->
+                        viewModel.deleteCar(it.carId)
+                    })
+                .setNegativeButton(R.string.no, null).show()
+        }
+
+        viewModel.wasDeleted.observe(this, {
+            if (it) {
+                loadCars()
+            }
+        })
+
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             startActivity(Intent(this, CarActivity::class.java).apply { putExtra("CarId", -1) })
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadCars()
     }
 
     private fun loadCars() {
@@ -72,7 +98,6 @@ class MainActivity : AppCompatActivity() {
     private fun renderFailure(message: String) {
         hideProgress()
         Snackbar.make(this, binding.content.recyclerCars, message, Snackbar.LENGTH_LONG)
-
     }
 
     private fun renderCarList(cars: List<CarEntity>?) {

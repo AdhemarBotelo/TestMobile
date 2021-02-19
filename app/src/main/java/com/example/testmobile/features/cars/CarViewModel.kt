@@ -6,16 +6,17 @@ import com.example.testmobile.features.BaseViewModel
 import com.example.testmobile.interactor.entities.CarEntity
 import com.example.testmobile.interactor.entities.CategoryEntity
 import com.example.testmobile.interactor.entities.PropertyEntity
-import com.example.testmobile.interactor.useCases.GetCatergories
-import com.example.testmobile.interactor.useCases.GetPropertiesByCategory
-import com.example.testmobile.interactor.useCases.InsertCar
-import com.example.testmobile.interactor.useCases.UseCase
+import com.example.testmobile.interactor.useCases.*
 
 class CarViewModel constructor(
     private val getCategories: GetCatergories,
     private val getPropertiesByCategory: GetPropertiesByCategory,
-    private val insertCar: InsertCar
+    private val insertCar: InsertCar,
+    private val updateCar: UpdateCar,
+    private val getCar: GetCar
 ) : BaseViewModel() {
+    private val _car: MutableLiveData<CarEntity> = MutableLiveData()
+    val car: LiveData<CarEntity> = _car
 
     private val _categories: MutableLiveData<List<CategoryEntity>> = MutableLiveData()
     val categories: LiveData<List<CategoryEntity>> = _categories
@@ -45,8 +46,19 @@ class CarViewModel constructor(
         _wasProcessed.value = wasProcessed
     }
 
+    private fun handleGetCar(car: CarEntity) {
+        _car.value = car
+    }
+
     fun saveCar(car: CarEntity) {
         insertCar(car) { it.fold(::handleFailure, ::handleProcess) }
     }
 
+    fun updateCar(car: CarEntity) {
+        updateCar(car) { it.fold(::handleFailure, ::handleProcess) }
+    }
+
+    fun getCar(idCar: Long) {
+        getCar(idCar) { it.fold(::handleFailure, ::handleGetCar) }
+    }
 }

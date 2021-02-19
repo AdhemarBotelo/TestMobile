@@ -19,25 +19,35 @@ class CarsAdapter : RecyclerView.Adapter<CarsAdapter.ViewHolder>() {
 
     internal var clickListener: (CarEntity) -> Unit = { _ -> }
 
+    internal var clickDeleteListener: (CarEntity) -> Unit = { _ -> }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemCarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) =
-        viewHolder.bind(collection[position], clickListener)
+        viewHolder.bind(collection[position], clickListener, clickDeleteListener)
 
     override fun getItemCount() = collection.size
 
     class ViewHolder(val binding: ItemCarBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(car: CarEntity, clickListener: (CarEntity) -> Unit) {
+        fun bind(
+            car: CarEntity,
+            clickListener: (CarEntity) -> Unit,
+            clickDeleteListener: (CarEntity) -> Unit
+        ) {
             binding.TextViewSeats.text = car.seats.toString()
             binding.textViewPrice.text = car.price.toString()
             binding.switchNew.isChecked = car.isNew ?: false
             binding.textViewModel.text = car.model
             binding.textViewDate.text = car.dateReleased.toString()
             binding.textViewCategory.text = car.categoryId
+
+            binding.imageButtonDelete.setOnClickListener {
+                clickDeleteListener(car)
+            }
 
             itemView.setOnClickListener {
                 clickListener(

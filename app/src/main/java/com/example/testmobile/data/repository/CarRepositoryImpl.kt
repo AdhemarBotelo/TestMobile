@@ -24,33 +24,29 @@ class CarRepositoryImpl(private val carStoreImpl: CarStore) : CarRepository {
     }
 
     override fun getCar(id: Long): Either<Failure, CarEntity> {
-        TODO("Not yet implemented")
+        return try {
+            val (car, properties) = carStoreImpl.getCar(id)
+            var result = carToCarEntity(car)
+            result.properties = mutableListOf()
+            for (property in properties) {
+                result.properties.add(
+                    PropertyEntity(
+                        property.propertyId,
+                        null,
+                        null,
+                        property.value
+                    )
+                )
+            }
+            Right(result)
+        } catch (exception: Throwable) {
+            Left(Failure.DataBaseError)
+        }
     }
 
     override fun insertCar(car: CarEntity): Either<Failure, Boolean> {
         return try {
-            val carDB = Car(
-                0L,
-                car.seats,
-                car.price,
-                car.isNew,
-                car.model,
-                car.isUpdatable,
-                car.dateReleased,
-                car.categoryId
-            )
-
-            val propertyDB = mutableListOf<CarPropertyCrossRef>()
-            for (propertyEntity in car.properties) {
-                propertyDB.add(
-                    CarPropertyCrossRef(
-                        0L,
-                        propertyEntity.propertyId,
-                        propertyEntity.value
-                    )
-                )
-            }
-            carStoreImpl.insertCar(carDB, propertyDB)
+            carStoreImpl.insertCar(carEntityToCar(car), carEntityToProperties(car))
             Right(true)
         } catch (exception: Throwable) {
             Left(Failure.DataBaseError)
@@ -58,11 +54,21 @@ class CarRepositoryImpl(private val carStoreImpl: CarStore) : CarRepository {
     }
 
     override fun updateCar(car: CarEntity): Either<Failure, Boolean> {
-        TODO("Not yet implemented")
+        return try {
+            carStoreImpl.updateCar(carEntityToCar(car), carEntityToProperties(car))
+            Right(true)
+        } catch (exception: Throwable) {
+            Left(Failure.DataBaseError)
+        }
     }
 
     override fun deleteCar(id: Long): Either<Failure, Boolean> {
-        TODO("Not yet implemented")
+        return try {
+            carStoreImpl.deleteCar(id)
+            Right(true)
+        } catch (exception: Throwable) {
+            Left(Failure.DataBaseError)
+        }
     }
 
     override fun getCategories(): Either<Failure, List<CategoryEntity>> {
@@ -105,7 +111,7 @@ class CarRepositoryImpl(private val carStoreImpl: CarStore) : CarRepository {
             car.isUpdatable,
             car.dateReleased,
             car.categoryId,
-            emptyList()
+            mutableListOf()
         )
     }
 
@@ -120,5 +126,33 @@ class CarRepositoryImpl(private val carStoreImpl: CarStore) : CarRepository {
             property.name,
             ""
         )
+    }
+
+
+    private fun carEntityToCar(carEntity: CarEntity): Car {
+        return Car(
+            carEntity.carId,
+            carEntity.seats,
+            carEntity.price,
+            carEntity.isNew,
+            carEntity.model,
+            carEntity.isUpdatable,
+            carEntity.dateReleased,
+            carEntity.categoryId
+        )
+    }
+
+    private fun carEntityToProperties(carEntity: CarEntity): List<CarPropertyCrossRef> {
+        val propertyDB = mutableListOf<CarPropertyCrossRef>()
+        for (propertyEntity in carEntity.properties) {
+            propertyDB.add(
+                CarPropertyCrossRef(
+                    0L,
+                    propertyEntity.propertyId,
+                    propertyEntity.value
+                )
+            )
+        }
+        return propertyDB
     }
 }

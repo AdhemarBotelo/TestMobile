@@ -16,20 +16,23 @@ class CarStoreImpl(private val database: CarsDatabase) : CarStore {
         return carDao.getAllCars();
     }
 
-    override fun getCar(id: Long): CarWithProperties {
-        return carDao.getCar(id);
+    override fun getCar(id: Long): Pair<Car, List<CarPropertyCrossRef>> {
+        return Pair<Car, List<CarPropertyCrossRef>>(
+            carDao.getCar(id),
+            carDao.selectPropertyCar(id)
+        )
     }
 
     override fun insertCar(car: Car, property: List<CarPropertyCrossRef>) {
         return carDao.insertCarProperty(car, property)
     }
 
-    override fun updateCar(car: Car, property: Property) {
-        TODO("Not yet implemented")
+    override fun updateCar(car: Car, property: List<CarPropertyCrossRef>) {
+        return carDao.updateCarProperty(car, property)
     }
 
     override fun deleteCar(id: Long) {
-        TODO("Not yet implemented")
+        carDao.completeDeleteCar(idCar = id)
     }
 
     override fun getCategories(): List<Category> {
@@ -39,7 +42,6 @@ class CarStoreImpl(private val database: CarsDatabase) : CarStore {
     override fun getPropertyByCategory(categoryId: String): List<Property> {
         return property.selectPropertyByCategory(categoryId)
     }
-
 
     override fun insertDefaultCategories() {
         for (category in DefaultCategories) {
