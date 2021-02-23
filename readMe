@@ -2,3 +2,20 @@ Comments:
 the application implement a clar architecure with 3 layers one for data other for for the domain ,and the last one for the UI
 it use repository pattern , command pattern , mmvvm presenter pattern
 JIC the app support dark mode
+
+
+Problem:
+We’re trying to find people who is able to write high quality code using design patterns and good practices writing software. 
+So that you must design an application to Car shop and this application must save every car in the store.
+the information must be saved for each car: 
+● How many seats up to 
+● Price
+● It’s new or used 
+● Model 
+● Date released 
+● Category:  o Just can be Electric, truck or commercial
+o If electronic car, the app must save battery capacity o If it is a truck, 
+the app must save it has a max available payload o And if it is commercial, the app must save space capacity
+o All vehicle can be saved, modified and read, except to electronic car, this cannot be modified. 
+o The application must be able to create more categories 
+ 
