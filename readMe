@@ -1,11 +1,11 @@
 Comments:
-the application implement a clar architecure with 3 layers one for data other for for the domain ,and the last one for the UI
+the application implement a clear architecure with 3 layers one for data other for for the domain ,and the last one for the UI
 it use repository pattern , command pattern , mmvvm presenter pattern
-JIC the app support dark mode
+JIC the app also support dark mode
 
 
 Problem:
-We’re trying to find people who is able to write high quality code using design patterns and good practices writing software. 
+Write high quality code using design patterns and good practices. 
 So that you must design an application to Car shop and this application must save every car in the store.
 the information must be saved for each car: 
 ● How many seats up to 
